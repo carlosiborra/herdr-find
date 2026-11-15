@@ -2,6 +2,8 @@
 
 ## 0.2.0
 
+- Plugin id is now `carlosiborra.find` (namespaced, so it cannot clash with other `herdr-find` plugins). Bind actions as `carlosiborra.find.<action>`.
+
 - Honor `HERDR_BIN_PATH` for every herdr invocation (fallback `herdr`) and `HERDR_PLUGIN_ID` for the plugin pane open.
 - Read the theme from `$XDG_CONFIG_HOME/herdr/config.toml` when set, else `~/.config/herdr/config.toml`.
 - Cap scrollback reads at 5000 lines per pane (was one million).

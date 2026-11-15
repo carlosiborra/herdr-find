@@ -22,7 +22,7 @@ PTY tests exercise typing, shell selection/focus calls, Escape/Ctrl-C, SIGINT/SI
 Use a genuine HerdR-managed terminal with its inherited environment. Do not set HERDR_ENV manually, guess sockets or fall back to a different session. Install the plugin and apply an unused binding using the [README](../README.md).
 
 1. Record `herdr --version`, `python3 --version` and `herdr config check` outcome without saving configuration contents.
-2. Invoke `herdr plugin action invoke herdr-find.open`. Confirm the centered popup opens and includes expected agents and ordinary shells while excluding its own pane.
+2. Invoke `herdr plugin action invoke carlosiborra.find.open`. Confirm the centered popup opens and includes expected agents and ordinary shells while excluding its own pane.
 3. Type a title subsequence, then try workspace/tab, type and cwd fragments. Confirm the first result is selected after editing, arrows change selection and backspace edits the query.
 4. Choose an ordinary shell and press Enter. Confirm the popup closes and the exact shell is focused. Repeat with a coding agent and verify the selected destination again.
 5. Resize around 40, 80 and 160 columns while filtering. Confirm query and selection survive and details remain bounded.
@@ -36,7 +36,7 @@ Stop if focus selects the wrong pane, the socket response cannot be confirmed, o
 | Symptom | Check or action |
 | --- | --- |
 | Must run inside a HerdR-managed session | Launch from HerdR; do not set HERDR_* variables by hand |
-| Binding does nothing | Check that the plugin is installed, herdr-find.open action, unused key and config reload |
+| Binding does nothing | Check that the plugin is installed, carlosiborra.find.open action, unused key and config reload |
 | Focus unavailable | Confirm HerdR inherited HERDR_SOCKET_PATH, selected pane still exists and your HerdR version supports `pane.focus` (0.9.5+) |
 | Results are stale with an error | Last-good records stay visible; polling retries rather than clearing results |
 | A typed q does not close | All printable keys search; use Escape or Ctrl-C |

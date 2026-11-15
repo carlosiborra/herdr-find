@@ -56,11 +56,11 @@ Bind it in your HerdR `config.toml` (apply this yourself):
 [[keys.command]]
 key = "prefix+f"
 type = "plugin_action"
-command = "herdr-find.open"
+command = "carlosiborra.find.open"
 description = "fuzzy find any terminal"
 ```
 
-Then run `herdr config check` and `herdr server reload-config`. You can also open it directly with `herdr plugin action invoke herdr-find.open`.
+Then run `herdr config check` and `herdr server reload-config`. You can also open it directly with `herdr plugin action invoke carlosiborra.find.open`.
 
 ## Usage
 
@@ -115,7 +115,7 @@ Once a query is entered, each other terminal is read once (sequentially, `recent
 
 ```sh
 herdr plugin update
-herdr plugin uninstall herdr-find
+herdr plugin uninstall carlosiborra.find
 ```
 
 Remove the keybinding from your config as well.

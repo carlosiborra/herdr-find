@@ -21,9 +21,9 @@ class FindError(RuntimeError):
 
 
 class Client:
-    def __init__(self, binary='herdr', socket_path=None, runner=subprocess.run, timeout=2, plugin_id='herdr-find'):
+    def __init__(self, binary='herdr', socket_path=None, runner=subprocess.run, timeout=2, plugin_id='carlosiborra.find'):
         self.binary, self.socket_path = binary or 'herdr', socket_path
-        self.plugin_id = plugin_id or 'herdr-find'
+        self.plugin_id = plugin_id or 'carlosiborra.find'
         self.runner, self.timeout = runner, timeout
 
     def _cli(self, args):

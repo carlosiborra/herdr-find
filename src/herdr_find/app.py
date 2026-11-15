@@ -184,7 +184,7 @@ def main(argv=None, environ=None, client=None):
         print('HerdR Find must run inside a HerdR-managed session.', file=sys.stderr)
         return 2
     client = client or Client(env.get('HERDR_BIN_PATH') or 'herdr', env.get('HERDR_SOCKET_PATH'),
-                              plugin_id=env.get('HERDR_PLUGIN_ID') or 'herdr-find')
+                              plugin_id=env.get('HERDR_PLUGIN_ID') or 'carlosiborra.find')
     if args.open:
         try:
             client.open()
