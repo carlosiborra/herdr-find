@@ -20,6 +20,8 @@ Keep a single worker, a 500 ms polling floor, bounded I/O, generic errors and la
 
 The terminal/text/theme/search helpers are vendored source files that originated from a shared helper set; they are maintained here independently.
 
+These files (`theme.py`, `terminal.py`, `search.py`, `text.py`) are guarded by `tests/test_vendored.py`, which compares their sha256 to a recorded table. Change them only deliberately: update the hash in that test and mention the change in `CHANGELOG.md`.
+
 Scrollback reads are capped at 5000 lines per pane (`SCROLLBACK_LINES` in `client.py`); keep every herdr invocation going through `HERDR_BIN_PATH` and the plugin id from `HERDR_PLUGIN_ID`.
 
 ## Pull requests

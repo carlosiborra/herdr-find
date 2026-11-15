@@ -1,6 +1,13 @@
 # herdr-find
 
+[![CI](https://github.com/carlosiborra/herdr-find/actions/workflows/ci.yml/badge.svg)](https://github.com/carlosiborra/herdr-find/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/carlosiborra/herdr-find)](https://github.com/carlosiborra/herdr-find/releases)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![HerdR plugin](https://img.shields.io/badge/HerdR-plugin-orange)](https://herdr.dev/tui/plugins/)
+
 Fuzzy-find and jump to any terminal, agent or shell in your HerdR session, including text inside their scrollback.
+
+![herdr-find demo](docs/demo.gif)
 
 ```text
 

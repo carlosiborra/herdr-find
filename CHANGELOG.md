@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.1
+
+- Add a demo GIF (`docs/demo.gif`) to the README.
+- Add CI, release, license and HerdR plugin badges to the README.
+- Add GitHub issue templates (bug report, feature request) and disable blank issues, with a link to Security Advisories.
+- Add `tests/test_vendored.py`, a drift guard that checks the sha256 of the vendored helpers (`theme.py`, `terminal.py`, `search.py`, `text.py`); documented in CONTRIBUTING.
+- Manifest: version 0.2.1.
+
 ## 0.2.0
 
 - Plugin id is now `carlosiborra.find` (namespaced, so it cannot clash with other `herdr-find` plugins). Bind actions as `carlosiborra.find.<action>`.
