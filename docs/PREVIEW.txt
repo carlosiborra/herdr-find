@@ -1,0 +1,60 @@
+
+WIDTH 40 (synthetic finder)
+◆ HERDR FIND  |  2 / 2 terminals
+/
+────────────────────────────────────────
+  [CX] Build API                 working
+› [SH] Shell 界 café               shell
+
+
+
+
+
+
+
+
+
+
+Shell 界 café
+Work / Project / w1:p2 | /example
+j/k move  / search  Enter focus  f file…
+
+WIDTH 80 (synthetic finder)
+◆ HERDR FIND  |  2 / 2 terminals
+/
+────────────────────────────────────────────────────────────────────────────────
+  [CX] Build API                                                         working
+› [SH] Shell 界 café                                                       shell
+
+
+
+
+
+
+
+
+
+
+Shell 界 café
+Work / Project / w1:p2 | /example
+j/k move  / search  Enter focus  f files  d folders  s rg text  g lazygit  q/Es…
+
+WIDTH 160 (synthetic finder)
+◆ HERDR FIND  |  2 / 2 terminals
+/
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  [CX] Build API                                                                                                                Work/Project             working
+› [SH] Shell 界 café                                                                                                              Work/Project             shell
+
+
+
+
+
+
+
+
+
+
+Shell 界 café
+Work / Project / w1:p2 | /example
+j/k move  / search  Enter focus  f files  d folders  s rg text  g lazygit  q/Esc close

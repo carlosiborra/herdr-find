@@ -1,0 +1,20 @@
+id = "herdr-find"
+name = "HerdR Find"
+version = "0.2.0"
+min_herdr_version = "0.9.5"
+description = "Fuzzy-find and jump to any terminal, agent or shell in your session, including scrollback text"
+platforms = ["linux", "macos"]
+
+[[actions]]
+id = "open"
+title = "Fuzzy find a terminal"
+contexts = ["global"]
+command = ["python3", "bin/herdr-find", "--open"]
+
+[[panes]]
+id = "search"
+title = "Find Terminal"
+command = ["python3", "bin/herdr-find"]
+placement = "popup"
+width = 120
+height = 34

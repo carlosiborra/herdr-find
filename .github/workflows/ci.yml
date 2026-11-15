@@ -1,0 +1,32 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python: ["3.9", "3.13"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Unit tests
+        run: PYTHONPATH=src python3 -m unittest discover -s tests
+      - name: Validate manifest
+        if: matrix.python == '3.13'
+        run: |
+          python3 - <<'PY'
+          import tomllib
+          with open("herdr-plugin.toml", "rb") as f:
+              m = tomllib.load(f)
+          for k in ("id", "name", "version", "min_herdr_version"):
+              assert isinstance(m.get(k), str) and m[k], k
+          assert m["id"] == "herdr-find"
+          print("manifest ok", m["version"])
+          PY
