@@ -2,10 +2,12 @@
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 import json
+import os
 from pathlib import Path
 import shlex
 import shutil
 import subprocess
+import sys
 import time
 
 from .search import fuzzy_score
@@ -27,6 +29,38 @@ class Entry:
         return (str(self.path), self.line)
 
 
+def clipboard_command(env=None, which=shutil.which):
+    """Pick a clipboard writer: pbcopy (macOS), wl-copy (Wayland), xclip or xsel (X11)."""
+    env = env if env is not None else {}
+    if which('pbcopy'):
+        return ['pbcopy']
+    if env.get('WAYLAND_DISPLAY') and which('wl-copy'):
+        return ['wl-copy']
+    if which('xclip'):
+        return ['xclip', '-selection', 'clipboard']
+    if which('xsel'):
+        return ['xsel', '--clipboard', '--input']
+    if which('wl-copy'):
+        return ['wl-copy']
+    return None
+
+
+def opener_command(platform=None):
+    """System opener: `open` on macOS, `xdg-open` elsewhere (Linux `open` is unrelated)."""
+    return 'open' if (platform or sys.platform) == 'darwin' else 'xdg-open'
+
+
+def editor_command(env, which=shutil.which):
+    """$VISUAL, then $EDITOR, then the first of nvim, vim, vi on PATH."""
+    configured = env.get('VISUAL') or env.get('EDITOR')
+    if configured:
+        return shlex.split(configured)
+    for name in ('nvim', 'vim', 'vi'):
+        if which(name):
+            return [name]
+    return []
+
+
 def fd_binary(which=shutil.which):
     """Return the fd executable name; Debian and Ubuntu install it as fdfind."""
     if which('fd') is None and which('fdfind') is not None:
@@ -35,9 +69,10 @@ def fd_binary(which=shutil.which):
 
 
 class Tools:
-    def __init__(self, runner=subprocess.run, fd=None):
+    def __init__(self, runner=subprocess.run, fd=None, clipboard=None):
         self.runner = runner
         self.fd = fd or fd_binary()
+        self.clipboard = clipboard
 
     def call(self, args, root, accepted=(0,)):
         try:
@@ -111,8 +146,11 @@ class Tools:
 
     def copy(self, entry, link=False):
         value = entry.path.absolute().as_uri() + ('#L%d' % entry.line if entry.line else '') if link else str(entry.path)
+        command = clipboard_command(dict(os.environ)) if self.clipboard is None else self.clipboard
+        if not command:
+            raise ResourceError('Clipboard unavailable; install pbcopy, wl-copy, xclip or xsel')
         try:
-            result = self.runner(['pbcopy'], input=value, text=True, capture_output=True,
+            result = self.runner(command, input=value, text=True, capture_output=True,
                                  timeout=2, check=False)
         except (OSError, subprocess.TimeoutExpired) as exc:
             raise ResourceError('Clipboard unavailable') from exc
@@ -307,14 +345,14 @@ def run(root, mode, terminal, palette, tools=None):
         worker.shutdown(wait=True, cancel_futures=True)
 
 
-def launch(action, env, runner=subprocess.run):
+def launch(action, env, runner=subprocess.run, platform=None):
     kind, value = action
     if kind == 'git':
         args, root = ['lazygit'], value
     elif kind == 'open':
-        args, root = ['open', str(value.path)], value.path.parent
+        args, root = [opener_command(platform), str(value.path)], value.path.parent
     else:
-        editor = shlex.split(env.get('VISUAL') or env.get('EDITOR') or 'nvim')
+        editor = editor_command(env)
         if not editor:
             raise ResourceError('Editor is not configured')
         args = editor + (['+%d' % value.line] if value.line else []) + ['--', str(value.path)]

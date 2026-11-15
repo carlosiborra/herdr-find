@@ -5,7 +5,7 @@ import subprocess
 import tempfile
 import unittest
 
-from herdr_find.resources import Entry, Picker, Tools, ResourceError, fd_binary, render, launch, run
+from herdr_find.resources import Entry, Picker, Tools, ResourceError, clipboard_command, editor_command, fd_binary, opener_command, render, launch, run
 
 HAS_FD_RG = bool((shutil.which('fd') or shutil.which('fdfind')) and shutil.which('rg'))
 from herdr_find.theme import Palette
@@ -48,6 +48,27 @@ class ResourceTests(unittest.TestCase):
                     return ()
             self.assertEqual(run(root, 'files', Terminal(), Palette(mode='none'), Tools()), ('terminals',))
             self.assertEqual(calls, [('scan', 'files'), ('preview', 'file.txt'), ('copy', 'file.txt', True)])
+
+    def test_cross_platform_clipboard_opener_and_editor(self):
+        def only(*names):
+            return lambda name: '/bin/' + name if name in names else None
+        self.assertEqual(clipboard_command({}, only('pbcopy', 'xclip')), ['pbcopy'])
+        self.assertEqual(clipboard_command({'WAYLAND_DISPLAY': 'wayland-0'}, only('wl-copy', 'xclip')), ['wl-copy'])
+        self.assertEqual(clipboard_command({}, only('wl-copy', 'xclip')), ['xclip', '-selection', 'clipboard'])
+        self.assertEqual(clipboard_command({}, only('xsel')), ['xsel', '--clipboard', '--input'])
+        self.assertIsNone(clipboard_command({}, only()))
+        self.assertEqual(opener_command('darwin'), 'open')
+        self.assertEqual(opener_command('linux'), 'xdg-open')
+        self.assertEqual(editor_command({'EDITOR': 'code --wait'}, only()), ['code', '--wait'])
+        self.assertEqual(editor_command({}, only('vim', 'vi')), ['vim'])
+        self.assertEqual(editor_command({}, only()), [])
+        with self.assertRaises(ResourceError) as raised:
+            Tools(clipboard=False).copy(Entry(Path('/example/f')))
+        self.assertIn('Clipboard unavailable', str(raised.exception))
+        sent = []
+        Tools(runner=lambda args, **kw: sent.append((args, kw['input'])) or subprocess.CompletedProcess(args, 0),
+              clipboard=['xclip', '-selection', 'clipboard']).copy(Entry(Path('/example/f')))
+        self.assertEqual(sent, [(['xclip', '-selection', 'clipboard'], '/example/f')])
 
     def test_fd_binary_prefers_fd_then_debian_fdfind(self):
         self.assertEqual(fd_binary(lambda name: '/bin/fd' if name == 'fd' else None), 'fd')
@@ -111,13 +132,13 @@ class ResourceTests(unittest.TestCase):
             calls.append((args, kwargs))
             return subprocess.CompletedProcess(args, 0, '', '')
         entry = Entry(Path('/example/repo/file name.py'), 14)
-        Tools(runner).copy(entry)
+        Tools(runner, clipboard=['pbcopy']).copy(entry)
         self.assertEqual(calls[-1][1]['input'], '/example/repo/file name.py')
-        Tools(runner).copy(entry, link=True)
+        Tools(runner, clipboard=['pbcopy']).copy(entry, link=True)
         self.assertEqual(calls[-1][1]['input'], 'file:///example/repo/file%20name.py#L14')
         launch(('edit', entry), {'EDITOR': 'nvim -u NONE'}, runner)
         self.assertEqual(calls[-1][0], ['nvim', '-u', 'NONE', '+14', '--', str(entry.path)])
-        launch(('open', entry), {}, runner)
+        launch(('open', entry), {}, runner, platform='darwin')
         self.assertEqual(calls[-1][0], ['open', str(entry.path)])
         launch(('git', Path('/example/repo')), {}, runner)
         self.assertEqual(calls[-1][0], ['lazygit'])

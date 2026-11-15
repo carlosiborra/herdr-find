@@ -78,8 +78,8 @@ Resource keys (in navigation, with a terminal selected):
 | --- | --- |
 | `f` / `d` / `s` | Files / folders / ripgrep text in the terminal's directory |
 | `Enter` | Enter folder or open file in editor |
-| `o` | Open with the default app (`open`, macOS) |
-| `y` / `Y` | Copy absolute path / file URI (`pbcopy`, macOS) |
+| `o` | Open with the default app (`open` on macOS, `xdg-open` on Linux) |
+| `y` / `Y` | Copy absolute path / file URI (system clipboard) |
 | `g` | Launch lazygit at the selected repository |
 | `h` / `l` | Parent / enter directory |
 | `r` | Refresh |
@@ -92,8 +92,9 @@ Terminal search needs nothing beyond Python. These are used only by the resource
 - [`fd`](https://github.com/sharkdp/fd) for `f` and `d` (Debian and Ubuntu install it as `fdfind`, which is detected automatically)
 - [`rg`](https://github.com/BurntSushi/ripgrep) for `s`
 - [`lazygit`](https://github.com/jesseduffield/lazygit) for `g`
-- An editor from `$VISUAL` or `$EDITOR` (fallback `nvim`) for opening files
-- `pbcopy` and `open` (macOS) for `y`/`Y` and `o`; on Linux these keys report the tool as unavailable
+- An editor from `$VISUAL` or `$EDITOR` (fallback: the first of `nvim`, `vim`, `vi` on `PATH`) for opening files
+- A clipboard tool for `y`/`Y`: `pbcopy` on macOS; `wl-copy` (Wayland), `xclip` or `xsel` (X11) on Linux
+- The system opener for `o`: `open` on macOS, `xdg-open` on Linux
 
 ## Privacy and trust
 
@@ -103,7 +104,7 @@ HerdR plugins are not sandboxed; this one runs with your user's permissions. Wha
 - Reads each pane's recent scrollback locally (at most 5000 lines per pane, 2-second timeout) to match your query. Scrollback is held in memory for the popup's lifetime and is never stored, logged or sent anywhere.
 - Reads `$XDG_CONFIG_HOME/herdr/config.toml` (else `~/.config/herdr/config.toml`) only for `[theme.custom]` colors.
 - Connects to the `HERDR_SOCKET_PATH` Unix socket to send one `pane.focus` request. The HerdR CLI has no generic API-call command and `herdr pane focus` is directional only, so exact focus of an arbitrary pane uses the raw socket. It never guesses a socket path or uses another session.
-- Only on explicit keypress: runs `fd`, `rg`, `git`, `lazygit`, your editor, `open` or `pbcopy` on the selected terminal's directory or file. Arguments are passed as argv, never through a shell.
+- Only on explicit keypress: runs `fd`, `rg`, `git`, `lazygit`, your editor, the system opener or a clipboard tool on the selected terminal's directory or file. Arguments are passed as argv, never through a shell.
 - Makes no network connections, writes no files, keeps no search history and injects no terminal input.
 
 ## Scrollback search
