@@ -31,21 +31,21 @@ class Client:
             result = self.runner([self.binary] + list(args), capture_output=True,
                                  text=True, timeout=self.timeout, check=False)
         except (OSError, subprocess.TimeoutExpired) as exc:
-            raise FindError('HerdR unavailable; retrying') from exc
+            raise FindError('Herdr unavailable; retrying') from exc
         if result.returncode:
-            raise FindError('HerdR command failed')
+            raise FindError('Herdr command failed')
         try:
             data = json.loads(result.stdout)
         except (ValueError, TypeError) as exc:
-            raise FindError('HerdR returned invalid JSON') from exc
+            raise FindError('Herdr returned invalid JSON') from exc
         if not isinstance(data, dict) or not isinstance(data.get('result'), dict):
-            raise FindError('HerdR returned an invalid response')
+            raise FindError('Herdr returned an invalid response')
         return data['result']
 
     def snapshot(self):
         value = self._cli(('api', 'snapshot')).get('snapshot')
         if not isinstance(value, dict):
-            raise FindError('HerdR snapshot unavailable')
+            raise FindError('Herdr snapshot unavailable')
         return value
 
     def open(self):

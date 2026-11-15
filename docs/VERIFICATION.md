@@ -11,15 +11,15 @@ This guide describes how version 0.2.0 is tested and how to troubleshoot it.
 | Rendering | Synthetic frames printed at 40/80/160 columns; small dimensions/control checks pass |
 | Data fixtures | Agents, ordinary shells, own-pane exclusion, Unicode, invalid data and query selection covered |
 | Exact focus | Temporary AF_UNIX stub validates request, split response and destination checks |
-| Installed API contract | HerdR 0.9.5 schema includes pane.focus; CLI focus is directional |
+| Installed API contract | Herdr 0.9.5 schema includes pane.focus; CLI focus is directional |
 | Native socket response/focus | Manual check, see below |
-| Linux native popup and newer HerdR versions | Not tested (unit tests run in CI) |
+| Linux native popup and newer Herdr versions | Not tested (unit tests run in CI) |
 
 PTY tests exercise typing, shell selection/focus calls, Escape/Ctrl-C, SIGINT/SIGTERM, resize, outage recovery and unexpected errors with fake session data. They compare terminal settings with macOS's PENDIN state bit normalized. A successful stub response does not establish real server compatibility.
 
 ## Native evaluation
 
-Use a genuine HerdR-managed terminal with its inherited environment. Do not set HERDR_ENV manually, guess sockets or fall back to a different session. Install the plugin and apply an unused binding using the [README](../README.md).
+Use a genuine Herdr-managed terminal with its inherited environment. Do not set HERDR_ENV manually, guess sockets or fall back to a different session. Install the plugin and apply an unused binding using the [README](../README.md).
 
 1. Record `herdr --version`, `python3 --version` and `herdr config check` outcome without saving configuration contents.
 2. Invoke `herdr plugin action invoke carlosiborra.find.open`. Confirm the centered popup opens and includes expected agents and ordinary shells while excluding its own pane.
@@ -35,9 +35,9 @@ Stop if focus selects the wrong pane, the socket response cannot be confirmed, o
 
 | Symptom | Check or action |
 | --- | --- |
-| Must run inside a HerdR-managed session | Launch from HerdR; do not set HERDR_* variables by hand |
+| Must run inside a Herdr-managed session | Launch from Herdr; do not set HERDR_* variables by hand |
 | Binding does nothing | Check that the plugin is installed, carlosiborra.find.open action, unused key and config reload |
-| Focus unavailable | Confirm HerdR inherited HERDR_SOCKET_PATH, selected pane still exists and your HerdR version supports `pane.focus` (0.9.5+) |
+| Focus unavailable | Confirm Herdr inherited HERDR_SOCKET_PATH, selected pane still exists and your Herdr version supports `pane.focus` (0.9.5+) |
 | Results are stale with an error | Last-good records stay visible; polling retries rather than clearing results |
 | A typed q does not close | All printable keys search; use Escape or Ctrl-C |
 | Matching differs from fzf | Expected: a small deterministic subsequence scorer is bundled |
@@ -46,9 +46,9 @@ Stop if focus selects the wrong pane, the socket response cannot be confirmed, o
 
 ## Reporting results
 
-When reporting a problem, include the revision (`git rev-parse HEAD`), OS, HerdR and Python versions, test results and which native step failed. Agent and shell counts help; leave out raw snapshots, socket paths, environment dumps, titles, working directories, commands, output and session IDs. Use the synthetic previews for screenshots.
+When reporting a problem, include the revision (`git rev-parse HEAD`), OS, Herdr and Python versions, test results and which native step failed. Agent and shell counts help; leave out raw snapshots, socket paths, environment dumps, titles, working directories, commands, output and session IDs. Use the synthetic previews for screenshots.
 
-Native checks on Linux and HerdR versions newer than 0.9.5 remain unverified. CI runs the unit tests (not the native steps) on Linux and macOS.
+Native checks on Linux and Herdr versions newer than 0.9.5 remain unverified. CI runs the unit tests (not the native steps) on Linux and macOS.
 
 To check content search, search a known phrase present only in terminal output, confirm its matching snippet and source focus, then append output and use Ctrl-R to refresh. Confirm unavailable reads remain visible in coverage. Older or application-owned history may be unavailable.
 

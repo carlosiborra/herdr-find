@@ -3,35 +3,30 @@
 [![CI](https://github.com/carlosiborra/herdr-find/actions/workflows/ci.yml/badge.svg)](https://github.com/carlosiborra/herdr-find/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/carlosiborra/herdr-find)](https://github.com/carlosiborra/herdr-find/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![HerdR plugin](https://img.shields.io/badge/HerdR-plugin-orange)](https://herdr.dev/tui/plugins/)
+[![Herdr plugin](https://img.shields.io/badge/Herdr-plugin-orange)](https://herdr.dev/tui/plugins/)
 
-Fuzzy-find and jump to any terminal, agent or shell in your HerdR session, including text inside their scrollback.
+Jump to any terminal in your Herdr session by what's in it: agents and shells, matched on titles, directories and scrollback.
+
+- Search every pane across all workspaces and tabs at once.
+- Find a terminal by what it printed, not only by its name.
+- Stay on the keyboard, with no pip packages and no build step.
+
+```sh
+herdr plugin install carlosiborra/herdr-find
+```
+
+```toml
+[[keys.command]]
+key = "prefix+f"
+type = "plugin_action"
+command = "carlosiborra.find.open"
+```
 
 ![herdr-find demo](docs/demo.gif)
 
-```text
+*Type a few letters, pick a terminal and Enter focuses it.*
 
-◆ HERDR FIND  |  2 / 2 terminals
-/
-────────────────────────────────────────
-  [CX] Build API                 working
-› [SH] Shell 界 café               shell
-
-
-
-
-
-
-
-
-
-
-Shell 界 café
-Work / Project / w1:p2 | /example
-j/k move  / search  Enter focus  f file…
-```
-
-(Synthetic preview; see [docs/PREVIEW.txt](docs/PREVIEW.txt) for wider layouts.)
+Website: <https://carlosiborra.github.io/herdr-find/>
 
 ## Features
 
@@ -43,11 +38,11 @@ j/k move  / search  Enter focus  f file…
 
 ## Why not the built-in workspace picker?
 
-HerdR's built-in picker navigates workspaces. herdr-find searches every terminal pane across all workspaces and tabs at once, ranks results with a fuzzy subsequence scorer, matches against pane scrollback as well as titles, and distinguishes coding agents from ordinary shells.
+The built-in Herdr picker navigates workspaces. herdr-find searches every terminal pane across all workspaces and tabs at once, ranks results with a fuzzy subsequence scorer, matches pane scrollback as well as titles, and separates coding agents from ordinary shells.
 
 ## Requirements
 
-- HerdR 0.9.5 or newer
+- Herdr 0.9.5 or newer
 - Python 3.9+ available as `python3`
 - Linux or macOS
 
@@ -57,7 +52,7 @@ HerdR's built-in picker navigates workspaces. herdr-find searches every terminal
 herdr plugin install carlosiborra/herdr-find
 ```
 
-Bind it in your HerdR `config.toml` (apply this yourself):
+Bind it in your Herdr `config.toml` (apply this yourself). The snippet at the top is enough; this is the full form:
 
 ```toml
 [[keys.command]]
@@ -105,18 +100,36 @@ Terminal search needs nothing beyond Python. These are used only by the resource
 
 ## Privacy and trust
 
-HerdR plugins are not sandboxed; this one runs with your user's permissions. What it does:
+Herdr plugins are not sandboxed; this one runs with your user's permissions. What it does:
 
 - Runs `$HERDR_BIN_PATH` (fallback `herdr`): `api snapshot`, `pane read` and `plugin pane open`.
 - Reads each pane's recent scrollback locally (at most 5000 lines per pane, 2-second timeout) to match your query. Scrollback is held in memory for the popup's lifetime and is never stored, logged or sent anywhere.
 - Reads `$XDG_CONFIG_HOME/herdr/config.toml` (else `~/.config/herdr/config.toml`) only for `[theme.custom]` colors.
-- Connects to the `HERDR_SOCKET_PATH` Unix socket to send one `pane.focus` request. The HerdR CLI has no generic API-call command and `herdr pane focus` is directional only, so exact focus of an arbitrary pane uses the raw socket. It never guesses a socket path or uses another session.
+- Connects to the `HERDR_SOCKET_PATH` Unix socket to send one `pane.focus` request. The Herdr CLI has no generic API-call command and `herdr pane focus` is directional only, so exact focus of an arbitrary pane uses the raw socket. It never guesses a socket path or uses another session.
 - Only on explicit keypress: runs `fd`, `rg`, `git`, `lazygit`, your editor, the system opener or a clipboard tool on the selected terminal's directory or file. Arguments are passed as argv, never through a shell.
 - Makes no network connections, writes no files, keeps no search history and injects no terminal input.
 
 ## Scrollback search
 
-Once a query is entered, each other terminal is read once (sequentially, `recent-unwrapped`, up to 5000 lines) and matched alongside titles. The best matching line is shown with surrounding context. Coverage depends on HerdR's retained scrollback; alternate-screen or older content may be unavailable, and unavailable panes are reported. New output requires Ctrl-R.
+Once a query is entered, each other terminal is read once (sequentially, `recent-unwrapped`, up to 5000 lines) and matched alongside titles. The best matching line is shown with surrounding context. Coverage depends on Herdr's retained scrollback; alternate-screen or older content may be unavailable, and unavailable panes are reported. New output requires Ctrl-R.
+
+<details><summary>Text preview</summary>
+
+```text
+◆ HERDR FIND  |  2 / 2 terminals
+/
+────────────────────────────────────────
+  [CX] Build API                 working
+› [SH] Shell 界 café               shell
+
+Shell 界 café
+Work / Project / w1:p2 | /example
+j/k move  / search  Enter focus  f file…
+```
+
+Synthetic preview; see [docs/PREVIEW.txt](docs/PREVIEW.txt) for wider layouts.
+
+</details>
 
 ## Update and uninstall
 
@@ -135,8 +148,17 @@ python3 -m compileall -q src bin
 PYTHONPATH=src python3 tests/render_snapshots.py
 ```
 
-Tests use synthetic snapshots, an injected CLI runner, a temporary Unix socket stub and a PTY with a fake client; they never contact a real HerdR server. See [CONTRIBUTING.md](CONTRIBUTING.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/VERIFICATION.md](docs/VERIFICATION.md).
+Tests use synthetic snapshots, an injected CLI runner, a temporary Unix socket stub and a PTY with a fake client; they never contact a real Herdr server. See [CONTRIBUTING.md](CONTRIBUTING.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/VERIFICATION.md](docs/VERIFICATION.md).
+
+## More from this suite
+
+- [herdr-find](https://github.com/carlosiborra/herdr-find): fuzzy-find any terminal or agent
+- [herdr-fleet](https://github.com/carlosiborra/herdr-fleet): agent triage dashboard
+- [herdr-layouts](https://github.com/carlosiborra/herdr-layouts): visual, recoverable pane layouts
+- [herdr-motion](https://github.com/carlosiborra/herdr-motion): smooth split-ratio effects
 
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+An independent community plugin for [Herdr](https://herdr.dev); not affiliated with the Herdr project.

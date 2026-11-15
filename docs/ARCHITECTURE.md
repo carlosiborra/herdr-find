@@ -1,6 +1,6 @@
 # How Find works
 
-Find turns one HerdR session snapshot into a ranked list of agents and ordinary shells. It runs in its own interactive popup and does not depend on any other plugin.
+Find turns one Herdr session snapshot into a ranked list of agents and ordinary shells. It runs in its own interactive popup and does not depend on any other plugin.
 
 For example, typing `bapi` can match a terminal titled `Build API`. A query edit selects the highest-ranked match. Arrow keys move selection. Enter from query mode retains the query and returns to navigation; only Enter from navigation queues focus for the selected pane ID. The popup exits only after the focus response confirms the destination. The installed CLI's `pane focus` command accepts a direction, so it cannot implement arbitrary selected-pane focus.
 
@@ -34,7 +34,7 @@ sequenceDiagram
     participant User
     participant App as Finder event loop
     participant Worker as Single worker
-    participant Server as Inherited HerdR Unix socket
+    participant Server as Inherited Herdr Unix socket
     User->>App: Press Enter on selected pane
     App->>Worker: Queue pane ID
     Worker->>Server: pane.focus with request ID and pane_id
@@ -51,7 +51,7 @@ Snapshot and focus work share one background worker with two-second I/O timeouts
 
 Rendering strips control sequences, compares lines and writes only changed rows. Resize causes a full clear and preserves query/selection. SIGINT, SIGTERM, Ctrl-C, Escape and unexpected exceptions restore input settings, cursor, wrapping and alternate screen. SIGKILL cannot be caught. A running request may finish during exit, bounded by its timeout.
 
-There are no preferences, history files, logs or disk caches. Scrollback has a temporary in-memory cache. Terminal metadata and query text stay in memory and are cleared on exit. The palette reads only theme colors from HerdR's configuration. Project files are read only through explicit directory search/preview actions. Saved agent histories and credential configuration are not scanned automatically. Opening its own popup and explicitly focusing the selected pane are the only mutations.
+There are no preferences, history files, logs or disk caches. Scrollback has a temporary in-memory cache. Terminal metadata and query text stay in memory and are cleared on exit. The palette reads only theme colors from Herdr's configuration. Project files are read only through explicit directory search/preview actions. Saved agent histories and credential configuration are not scanned automatically. Opening its own popup and explicitly focusing the selected pane are the only mutations.
 
 See [verification](VERIFICATION.md) for test coverage and the manual checks.
 

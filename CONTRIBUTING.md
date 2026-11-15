@@ -10,7 +10,7 @@ PYTHONPATH=src python3 tests/render_snapshots.py
 git diff --check
 ```
 
-The separate `py_compile` command covers the extensionless entrypoint. Unit tests use synthetic snapshots, an injected CLI runner, a temporary AF_UNIX stub and a fake-client PTY. They do not inspect a live HerdR session. Snapshot output is synthetic and suitable for review.
+The separate `py_compile` command covers the extensionless entrypoint. Unit tests use synthetic snapshots, an injected CLI runner, a temporary AF_UNIX stub and a fake-client PTY. They do not inspect a live Herdr session. Snapshot output is synthetic and suitable for review.
 
 ## Change boundaries
 
@@ -26,8 +26,10 @@ Scrollback reads are capped at 5000 lines per pane (`SCROLLBACK_LINES` in `clien
 
 ## Pull requests
 
-Describe the change and the tests you ran. Use synthetic frames instead of real titles, paths, pane output, session IDs, config or raw diagnostics. For native checks, follow [verification](docs/VERIFICATION.md) inside a real HerdR pane; do not set HERDR_ENV by hand.
+Describe the change and the tests you ran. Use synthetic frames instead of real titles, paths, pane output, session IDs, config or raw diagnostics. For native checks, follow [verification](docs/VERIFICATION.md) inside a real Herdr pane; do not set HERDR_ENV by hand.
 
 Contributions are accepted under the repository's MIT license (see the root `LICENSE`).
 
 Resource tests use temporary synthetic directories and the installed fd/rg/Git tools. Clipboard and interactive app launches use injected runners to avoid altering the developer clipboard or opening applications. The resource PTY test exercises files, real fixture previews, mode return and terminal restoration.
+
+Write `herdr` for the command and Herdr for the product; never HerdR.

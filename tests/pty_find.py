@@ -1,4 +1,4 @@
-"""Synthetic fixture; never connects to HerdR or reads real terminal data."""
+"""Synthetic fixture; never connects to Herdr or reads real terminal data."""
 import sys
 
 from herdr_find.app import main

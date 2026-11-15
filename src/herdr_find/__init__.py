@@ -1,1 +1,1 @@
-"""Standalone, memory-only fuzzy terminal finder for HerdR."""
+"""Standalone, memory-only fuzzy terminal finder for Herdr."""

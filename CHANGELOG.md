@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.2
+
+- Naming: write Herdr for the product and `herdr` for the command, across README, docs, manifest name ("Herdr Find"), user-facing strings and tests.
+- Vendored helpers: HerdR → Herdr spelling only (no spelling hits in the helper files; recorded hashes unchanged).
+- README rewritten with a benefit-first opening, install and keybinding snippet, demo caption, website link, collapsed text preview and suite links.
+- CONTRIBUTING: document the naming convention.
+- Manifest: version 0.2.2.
+
 ## 0.2.1
 
 - Add a demo GIF (`docs/demo.gif`) to the README.

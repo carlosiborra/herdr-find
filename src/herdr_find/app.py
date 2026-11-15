@@ -111,7 +111,7 @@ def run(client, terminal, palette, own_pane, interval):
                     if operation == 'read':
                         unavailable.add(reading)
                     else:
-                        state.error = 'Focus unavailable; retry selection' if operation == 'focus' else 'HerdR unavailable; retrying'
+                        state.error = 'Focus unavailable; retry selection' if operation == 'focus' else 'Herdr unavailable; retrying'
                 future = None
             if future is None:
                 if queued:
@@ -176,12 +176,12 @@ def config_path(env):
 
 def main(argv=None, environ=None, client=None):
     env = dict(os.environ if environ is None else environ)
-    parser = argparse.ArgumentParser(description='Fuzzy search all HerdR terminals')
+    parser = argparse.ArgumentParser(description='Fuzzy search all Herdr terminals')
     parser.add_argument('--open', action='store_true', help='Launch the plugin overlay')
     parser.add_argument('--poll', type=float, default=1, help='Polling seconds, minimum 0.5')
     args = parser.parse_args(argv)
     if env.get('HERDR_ENV') != '1':
-        print('HerdR Find must run inside a HerdR-managed session.', file=sys.stderr)
+        print('Herdr Find must run inside a Herdr-managed session.', file=sys.stderr)
         return 2
     client = client or Client(env.get('HERDR_BIN_PATH') or 'herdr', env.get('HERDR_SOCKET_PATH'),
                               plugin_id=env.get('HERDR_PLUGIN_ID') or 'carlosiborra.find')
@@ -190,10 +190,10 @@ def main(argv=None, environ=None, client=None):
             client.open()
             return 0
         except FindError:
-            print('HerdR Find could not open its search pane.', file=sys.stderr)
+            print('Herdr Find could not open its search pane.', file=sys.stderr)
             return 1
     if not sys.stdin.isatty() or not sys.stdout.isatty():
-        print('HerdR Find requires an interactive terminal.', file=sys.stderr)
+        print('Herdr Find requires an interactive terminal.', file=sys.stderr)
         return 2
     interval = max(0.5, args.poll) if math.isfinite(args.poll) else 1
     palette = Palette(color_mode(env), read_colors(config_path(env)))
@@ -224,5 +224,5 @@ def main(argv=None, environ=None, client=None):
     except KeyboardInterrupt:
         return 130
     except Exception:
-        print('HerdR Find stopped after an unexpected error.', file=sys.stderr)
+        print('Herdr Find stopped after an unexpected error.', file=sys.stderr)
         return 1

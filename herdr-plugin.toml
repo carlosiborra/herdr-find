@@ -1,6 +1,6 @@
 id = "carlosiborra.find"
-name = "HerdR Find"
-version = "0.2.1"
+name = "Herdr Find"
+version = "0.2.2"
 min_herdr_version = "0.9.5"
 description = "Fuzzy-find and jump to any terminal, agent or shell in your session, including scrollback text"
 platforms = ["linux", "macos"]
