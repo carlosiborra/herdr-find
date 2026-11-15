@@ -16,6 +16,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
+      - name: Install fd and ripgrep (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y fd-find ripgrep
+      - name: Install fd and ripgrep (macOS)
+        if: runner.os == 'macOS'
+        run: brew install fd ripgrep
       - name: Unit tests
         run: PYTHONPATH=src python3 -m unittest discover -s tests
       - name: Validate manifest

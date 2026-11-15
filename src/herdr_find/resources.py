@@ -4,6 +4,7 @@ from dataclasses import dataclass
 import json
 from pathlib import Path
 import shlex
+import shutil
 import subprocess
 import time
 
@@ -26,9 +27,17 @@ class Entry:
         return (str(self.path), self.line)
 
 
+def fd_binary(which=shutil.which):
+    """Return the fd executable name; Debian and Ubuntu install it as fdfind."""
+    if which('fd') is None and which('fdfind') is not None:
+        return 'fdfind'
+    return 'fd'
+
+
 class Tools:
-    def __init__(self, runner=subprocess.run):
+    def __init__(self, runner=subprocess.run, fd=None):
         self.runner = runner
+        self.fd = fd or fd_binary()
 
     def call(self, args, root, accepted=(0,)):
         try:
@@ -68,7 +77,7 @@ class Tools:
                 raise ResourceError('Invalid rg result') from exc
             partial = limited or result.returncode == 0 and bool(result.stderr.strip())
             return tuple(entries), ('Partial results | ' if partial else '') + 'rg text | up to 500 results, 20 matches/file'
-        result = self.call(('fd', '--type', 'd' if mode == 'folders' else 'f',
+        result = self.call((self.fd, '--type', 'd' if mode == 'folders' else 'f',
                             '--absolute-path', '--print0', '--max-results', '5000',
                             '--exclude', '.git', '.', str(root)), root)
         names = [name for name in result.stdout.split('\0') if name]

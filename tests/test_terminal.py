@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 import pty
 import select
+import shutil
 import signal
 import struct
 import subprocess
@@ -38,6 +39,7 @@ class TerminalTests(unittest.TestCase):
             os.close(master)
             os.close(slave)
 
+    @unittest.skipUnless(shutil.which('fd') or shutil.which('fdfind'), 'needs fd (or fdfind)')
     def test_file_picker_real_pty_preview_and_return_to_terminals(self):
         with tempfile.TemporaryDirectory() as directory:
             Path(directory, 'report.txt').write_text('safe preview fixture\n')

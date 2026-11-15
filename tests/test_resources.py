@@ -1,10 +1,13 @@
 import json
 from pathlib import Path
+import shutil
 import subprocess
 import tempfile
 import unittest
 
-from herdr_find.resources import Entry, Picker, Tools, ResourceError, render, launch, run
+from herdr_find.resources import Entry, Picker, Tools, ResourceError, fd_binary, render, launch, run
+
+HAS_FD_RG = bool((shutil.which('fd') or shutil.which('fdfind')) and shutil.which('rg'))
 from herdr_find.theme import Palette
 from herdr_find.text import cell_width
 
@@ -46,6 +49,12 @@ class ResourceTests(unittest.TestCase):
             self.assertEqual(run(root, 'files', Terminal(), Palette(mode='none'), Tools()), ('terminals',))
             self.assertEqual(calls, [('scan', 'files'), ('preview', 'file.txt'), ('copy', 'file.txt', True)])
 
+    def test_fd_binary_prefers_fd_then_debian_fdfind(self):
+        self.assertEqual(fd_binary(lambda name: '/bin/fd' if name == 'fd' else None), 'fd')
+        self.assertEqual(fd_binary(lambda name: '/bin/fdfind' if name == 'fdfind' else None), 'fdfind')
+        self.assertEqual(fd_binary(lambda name: None), 'fd')
+
+    @unittest.skipUnless(HAS_FD_RG, 'needs fd (or fdfind) and rg')
     def test_fd_files_folders_and_rg_content_on_real_temporary_fixture(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory).resolve()
@@ -116,10 +125,11 @@ class ResourceTests(unittest.TestCase):
         self.assertTrue(all('shell' not in kwargs for _, kwargs in calls))
 
     def test_git_root_validation_missing_tools_and_timeouts(self):
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            subprocess.run(['git', 'init', '-q', str(root)], check=True)
-            self.assertEqual(Tools().git_root(root).resolve(), root.resolve())
+        if shutil.which('git'):
+            with tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                subprocess.run(['git', 'init', '-q', str(root)], check=True)
+                self.assertEqual(Tools().git_root(root).resolve(), root.resolve())
         def timeout(args, **kwargs):
             raise subprocess.TimeoutExpired(args, 5)
         with self.assertRaises(ResourceError):

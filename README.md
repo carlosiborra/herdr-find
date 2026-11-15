@@ -89,7 +89,7 @@ Resource keys (in navigation, with a terminal selected):
 
 Terminal search needs nothing beyond Python. These are used only by the resource keys and degrade gracefully: if a tool is missing, the picker shows a short error and stays open.
 
-- [`fd`](https://github.com/sharkdp/fd) for `f` and `d`
+- [`fd`](https://github.com/sharkdp/fd) for `f` and `d` (Debian and Ubuntu install it as `fdfind`, which is detected automatically)
 - [`rg`](https://github.com/BurntSushi/ripgrep) for `s`
 - [`lazygit`](https://github.com/jesseduffield/lazygit) for `g`
 - An editor from `$VISUAL` or `$EDITOR` (fallback `nvim`) for opening files
