@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- CI: run the Linux jobs on `ubuntu-24.04`. `ubuntu-latest` moved to Ubuntu 26, where Python 3.9 (still supported by this plugin) is not available.
+
 ## 0.2.2
 
 - Naming: write Herdr for the product and `herdr` for the command, across README, docs, manifest name ("Herdr Find"), user-facing strings and tests.
